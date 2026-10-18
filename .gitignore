@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.log
+.env
+.env.local
+
+# local sqlite database
+data/
+
+# external dataset clone (its own git repo, upstream: yuhonas/free-exercise-db)
+free-exercise-db/

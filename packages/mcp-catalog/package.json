@@ -1,0 +1,15 @@
+{
+  "name": "@gpower/mcp-catalog",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/data.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "@gpower/catalog-core": "*",
+    "@modelcontextprotocol/sdk": "^1.12.0"
+  }
+}
