@@ -10,6 +10,7 @@ export const DATASET_DIR = path.join(ROOT_DIR, 'free-exercise-db')
 export const EXERCISES_DIR = path.join(DATASET_DIR, 'exercises')
 export const EXERCISES_JSON = path.join(DATASET_DIR, 'dist', 'exercises.json')
 export const SUMMARIES_DIR = path.join(ROOT_DIR, 'data-aug', 'summaries')
+export const TRANSLATIONS_DIR = path.join(ROOT_DIR, 'data-aug', 'translations')
 
 let cache = null
 
@@ -38,5 +39,22 @@ export function readSummary(id) {
     }
   }
   summaryCache.set(id, value)
+  return value
+}
+
+const translationCache = new Map()
+
+export function readTranslation(id) {
+  if (translationCache.has(id)) return translationCache.get(id)
+  let value = null
+  const file = path.join(TRANSLATIONS_DIR, `${id}.json`)
+  if (existsSync(file)) {
+    try {
+      value = JSON.parse(readFileSync(file, 'utf8'))
+    } catch {
+      value = null
+    }
+  }
+  translationCache.set(id, value)
   return value
 }

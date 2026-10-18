@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { getExercise } from '../api.js'
 
@@ -10,6 +10,12 @@ const props = defineProps({
 const exercise = ref(null)
 const error = ref('')
 const photoIndex = ref(0)
+
+const steps = computed(() => {
+  const current = exercise.value
+  if (!current) return []
+  return current.instructionsRu?.length ? current.instructionsRu : current.instructions || []
+})
 
 onMounted(async () => {
   try {
@@ -51,7 +57,8 @@ onMounted(async () => {
       </div>
 
       <div class="flex flex-col gap-4">
-        <h1 class="text-2xl font-bold">{{ exercise.name }}</h1>
+        <h1 class="text-2xl font-bold">{{ exercise.nameRu || exercise.name }}</h1>
+        <p v-if="exercise.nameRu" class="text-sm text-slate-500 -mt-2">{{ exercise.name }}</p>
 
         <dl class="grid grid-cols-2 gap-3 text-sm">
           <div><dt class="text-slate-500">Уровень</dt><dd>{{ exercise.levelLabel }}</dd></div>
@@ -71,9 +78,10 @@ onMounted(async () => {
 
         <div>
           <h2 class="font-semibold mb-2">Техника выполнения</h2>
-          <ol class="list-decimal list-inside space-y-1.5 text-sm text-slate-700">
-            <li v-for="(step, i) in exercise.instructions" :key="i">{{ step }}</li>
+          <ol v-if="steps.length" class="list-decimal list-inside space-y-1.5 text-sm text-slate-700">
+            <li v-for="(step, i) in steps" :key="i">{{ step }}</li>
           </ol>
+          <p v-else class="text-sm text-slate-500">Техника для этого упражнения не указана.</p>
         </div>
       </div>
     </article>

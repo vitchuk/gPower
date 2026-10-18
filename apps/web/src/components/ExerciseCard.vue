@@ -22,7 +22,8 @@ defineProps({
       <span v-else class="text-slate-400 text-sm">нет фото</span>
     </div>
     <div class="p-3 flex flex-col gap-2 flex-1">
-      <h3 class="font-semibold leading-snug">{{ exercise.name }}</h3>
+      <h3 class="font-semibold leading-snug">{{ exercise.nameRu || exercise.name }}</h3>
+      <p v-if="exercise.nameRu" class="text-xs text-slate-400 leading-snug">{{ exercise.name }}</p>
       <div class="flex flex-wrap gap-1 mt-auto">
         <span
           v-for="label in exercise.primaryMusclesLabels.slice(0, 3)"

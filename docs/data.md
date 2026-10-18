@@ -36,11 +36,21 @@ vec_docs (doc_id PK, embedding float[1024])             -- виртуальна�
 
 Ожидается 876 файлов (по одному на упражнение). Читается в двух местах: `catalog-core` (для поиска и подписи) и сервер (для индекса). Оба кешируют — **после регенерации перезапусти сервер**.
 
+`data-aug/translations/<id>.json` — русский перевод названия и техники:
+
+```json
+{ "id": "Air_Bike", "name": "Air Bike",
+  "nameRu": "Велосипед",
+  "instructionsRu": ["…шаг 1…", "…шаг 2…"] }
+```
+
+Ожидается 876 файлов; число `instructionsRu` совпадает с числом английских шагов (у упражнений без шагов — `[]`). Используется в API (`nameRu`, `instructionsRu`), поиске и индексе.
+
 ## RAG-индекс
 
 `npm run index` → `buildIndex()` (`apps/server/src/rag.js`):
 
-1. Документы на упражнение: `kind=exercise, lang=en` (название + техника + мышцы + снаряжение) и, если есть резюме, `kind=summary` с `lang=ru` и `lang=en`.
+1. Документы на упражнение: `kind=exercise, lang=en` — двуязычный текст (английские данные + `nameRu` + `instructionsRu`), и, если есть резюме, `kind=summary` с `lang=ru` и `lang=en`.
 2. Эмбеддинги через Ollama `POST /api/embed` (модель `EMBEDDING_MODEL`), батчами по 32.
 3. Запись в `docs` и `vec_docs` (эмбеддинг — `Float32Array` в Buffer).
 
@@ -55,8 +65,9 @@ vec_docs (doc_id PK, embedding float[1024])             -- виртуальна�
 ## Процедуры
 
 ```bash
-# после git pull датасета: сгенерировать недостающие/новые резюме (идемпотентно)
+# после git pull датасета: сгенерировать недостающие/новые резюме и переводы (идемпотентно)
 npm run summaries                 # только новые id; прогресс каждые 25
+npm run translations              # только новые id; требует DEEPSEEK_API_KEY
 SUMMARY_CONCURRENCY=3 npm run summaries   # параллелизм (по умолчанию 3)
 
 # затем пересобрать индекс

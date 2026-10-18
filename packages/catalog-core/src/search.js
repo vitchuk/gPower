@@ -1,4 +1,4 @@
-import { readSummary } from './data.js'
+import { readSummary, readTranslation } from './data.js'
 import { labelFor } from './dictionary.js'
 
 const STOPWORDS = new Set([
@@ -128,8 +128,9 @@ function fieldsFor(exercise) {
   if (value != null) return value
 
   const summary = readSummary(exercise.id)
+  const translation = readTranslation(exercise.id)
   value = {
-    name: exercise.name.toLowerCase(),
+    name: [exercise.name, translation?.nameRu || ''].join(' ').toLowerCase(),
     structured: [
       exercise.primaryMuscles.join(' '),
       exercise.secondaryMuscles.map((m) => labelFor('muscle', m)).join(' '),
@@ -144,7 +145,12 @@ function fieldsFor(exercise) {
     ]
       .join(' ')
       .toLowerCase(),
-    body: [(exercise.instructions || []).join(' '), summary?.ru || '', summary?.en || '']
+    body: [
+      (exercise.instructions || []).join(' '),
+      (translation?.instructionsRu || []).join(' '),
+      summary?.ru || '',
+      summary?.en || '',
+    ]
       .join(' ')
       .toLowerCase(),
   }

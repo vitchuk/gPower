@@ -18,6 +18,7 @@ npm run dev:web             # только web
 npm run dev:mcp             # только MCP-сервер
 npm run index               # пересборка RAG-индекса (нужна Ollama; ~18 мин)
 npm run summaries           # генерация RU/EN-резюме упражнений (нужен DEEPSEEK_API_KEY)
+npm run translations        # генерация RU-переводов названий и техники (нужен DEEPSEEK_API_KEY)
 npm run build               # прод-сборка web
 ```
 

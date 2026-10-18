@@ -14,7 +14,8 @@
     "dev:mcp": "npm run dev -w @gpower/mcp-catalog",
     "build": "npm run build -w @gpower/web",
     "index": "npm run index -w @gpower/server",
-    "summaries": "npm run summaries -w @gpower/server"
+    "summaries": "npm run summaries -w @gpower/server",
+    "translations": "npm run translations -w @gpower/server"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

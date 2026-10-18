@@ -20,7 +20,7 @@ flowchart LR
     O[("Ollama<br/>qwen3-embedding:0.6b")]
     D[("DeepSeek<br/>deepseek-chat")]
     M["packages/mcp-catalog<br/>MCP-сервер (:3001)"]
-    C[("Каталог: 876 JSON + images<br/>data-aug/summaries")]
+    C[("Каталог: 876 JSON + images<br/>data-aug: summaries · translations")]
 
     U -->|"/api · /images"| API
     U -->|"вопрос"| SSE
@@ -42,10 +42,10 @@ flowchart LR
 | API | `apps/server/src` | Fastify: REST каталога, авторизация, чаты, SSE, RAG-ретрив, LLM-цикл, MCP-клиент |
 | Каталог-ядро | `packages/catalog-core` | Загрузка датасета, RU-словарь, фильтры, двуязычный поиск, чтение резюме |
 | MCP-сервер | `packages/mcp-catalog` | Streamable HTTP MCP-сервер с инструментами каталога |
-| Дополнения | `data-aug/summaries` | 876 резюме RU/EN (версионируются) |
+| Дополнения | `data-aug/summaries`, `data-aug/translations` | 876 резюме RU/EN и 876 RU-переводов (версионируются) |
 | Датасет | `free-exercise-db` | Внешний клон (не изменяется) |
 
-Скрипты: `apps/server/scripts/build-index.js` (`npm run index`), `generate-summaries.js` (`npm run summaries`).
+Скрипты: `apps/server/scripts/build-index.js` (`npm run index`), `generate-summaries.js` (`npm run summaries`), `generate-translations.js` (`npm run translations`); общие приёмы LLM-вызовов — `scripts/lib/llm.js`.
 
 ## Порты и процессы
 

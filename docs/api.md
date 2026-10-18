@@ -12,7 +12,9 @@
 | GET | `/api/exercises/:id` | — | полная карточка упражнения; `404 {error:"not_found"}` |
 | GET | `/images/*` | путь картинки из датасета | JPEG (статика из `free-exercise-db/exercises`) |
 
-`page` ≥ 1 (по умолчанию 1); `pageSize` — 1…100 (по умолчанию 24). `items[]` — карточка: `id, name, level, levelLabel, mechanic, equipment, equipmentLabel, force, category, categoryLabel, primaryMuscles[], primaryMusclesLabels[], thumbnail`. Карточка по `:id` дополнительно содержит `instructions[]`, `secondaryMuscles[]`, `secondaryMusclesLabels[]`, `forceLabel`, `mechanicLabel`, `imageUrls[]`.
+`page` ≥ 1 (по умолчанию 1); `pageSize` — 1…100 (по умолчанию 24). `items[]` — карточка: `id, name, nameRu, level, levelLabel, mechanic, equipment, equipmentLabel, force, category, categoryLabel, primaryMuscles[], primaryMusclesLabels[], thumbnail`. Карточка по `:id` дополнительно содержит `instructions[]`, `instructionsRu[]`, `secondaryMuscles[]`, `secondaryMusclesLabels[]`, `forceLabel`, `mechanicLabel`, `imageUrls[]`.
+
+`nameRu` и `instructionsRu` приходят из `data-aug/translations` (русский перевод названия и техники); если перевода нет — `null`. Английские поля всегда присутствуют.
 
 Поведение `q`: токенизация; стоп-слова и токены короче 3 символов отбрасываются; для русских слов работает словарь RU→EN (`грудь→chest`, `жим→press`, `гантели→dumbbell`…); совпадение — по всем токенам (AND); ранжирование по полям (название 8 / структурные поля 4 / текст 1).
 

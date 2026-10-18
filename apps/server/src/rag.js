@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
-import { loadExercises, toListItem } from '@gpower/catalog-core'
+import { loadExercises, readTranslation, toListItem } from '@gpower/catalog-core'
 import { config } from './config.js'
 import { db } from './db.js'
 
@@ -26,8 +26,10 @@ export function readSummary(id) {
 }
 
 function exerciseDoc(ex) {
-  return [
+  const translation = readTranslation(ex.id)
+  const lines = [
     ex.name,
+    translation?.nameRu ? `Название (RU): ${translation.nameRu}` : null,
     `Category: ${ex.category}`,
     `Equipment: ${ex.equipment ?? 'n/a'}`,
     `Level: ${ex.level}`,
@@ -35,7 +37,11 @@ function exerciseDoc(ex) {
     `Secondary muscles: ${ex.secondaryMuscles.join(', ') || 'n/a'}`,
     '',
     ...(ex.instructions || []),
-  ].join('\n')
+  ]
+  if (translation?.instructionsRu?.length) {
+    lines.push('', 'Техника (RU):', ...translation.instructionsRu)
+  }
+  return lines.filter((line) => line !== null).join('\n')
 }
 
 export function buildDocs() {
@@ -68,6 +74,9 @@ export async function buildIndex() {
       insertVec.run(BigInt(info.lastInsertRowid), buffer)
       count++
     })
+    if (count % 256 === 0 || count === docs.length) {
+      console.log(`[index] ${count}/${docs.length}`)
+    }
   }
   return count
 }

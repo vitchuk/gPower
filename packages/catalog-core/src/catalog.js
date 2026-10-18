@@ -1,3 +1,4 @@
+import { readTranslation } from './data.js'
 import { labelFor } from './dictionary.js'
 import { queryGroups, scoreQuery } from './search.js'
 
@@ -7,6 +8,7 @@ export function toListItem(ex) {
   return {
     id: ex.id,
     name: ex.name,
+    nameRu: readTranslation(ex.id)?.nameRu ?? null,
     level: ex.level,
     levelLabel: labelFor('level', ex.level),
     mechanic: ex.mechanic,
@@ -22,8 +24,11 @@ export function toListItem(ex) {
 }
 
 export function toDetail(ex) {
+  const translation = readTranslation(ex.id)
   return {
     ...ex,
+    nameRu: translation?.nameRu ?? null,
+    instructionsRu: translation?.instructionsRu ?? null,
     levelLabel: labelFor('level', ex.level),
     categoryLabel: labelFor('category', ex.category),
     equipmentLabel: labelFor('equipment', ex.equipment),
