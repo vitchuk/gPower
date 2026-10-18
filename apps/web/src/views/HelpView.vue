@@ -85,7 +85,7 @@ async function send() {
     </div>
 
     <section class="bg-white border border-slate-200 rounded-xl flex flex-col overflow-hidden flex-1">
-      <div ref="scrollEl" class="flex-1 overflow-y-auto p-4 space-y-4">
+      <div ref="scrollEl" class="flex-1 overflow-y-auto [scrollbar-gutter:stable] p-4 space-y-4">
         <div v-if="!messages.length" class="space-y-2 mt-4">
           <div
             v-for="(item, index) in FAQ"

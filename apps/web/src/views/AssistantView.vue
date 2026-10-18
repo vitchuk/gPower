@@ -121,7 +121,7 @@ onMounted(refresh)
     </aside>
 
     <section class="bg-white border border-slate-200 rounded-xl flex flex-col overflow-hidden">
-      <div ref="scrollEl" class="flex-1 overflow-y-auto p-4 space-y-4">
+      <div ref="scrollEl" class="flex-1 overflow-y-auto [scrollbar-gutter:stable] p-4 space-y-4">
         <p v-if="!messages.length" class="text-slate-400 text-sm text-center mt-8">
           Спросите что-нибудь о тренировках — ассистент подберёт упражнения из каталога.
         </p>
