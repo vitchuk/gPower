@@ -43,11 +43,14 @@ export async function registerChatRoutes(app) {
     const chat = getOwnedChat(user.id, req.params.id)
     if (!chat) return reply.code(404).send({ error: 'not_found' })
     const rows = db
-      .prepare('SELECT id, role, content, citations, created_at FROM messages WHERE chat_id = ? ORDER BY id')
+      .prepare(
+        'SELECT id, role, content, citations, tabata, created_at FROM messages WHERE chat_id = ? ORDER BY id',
+      )
       .all(chat.id)
     const messages = rows.map((r) => ({
       ...r,
       citations: r.citations ? JSON.parse(r.citations) : [],
+      tabata: r.tabata ? JSON.parse(r.tabata) : [],
     }))
     return { chat, messages }
   })
@@ -112,7 +115,7 @@ export async function registerChatRoutes(app) {
     const send = (obj) => raw.write(`data: ${JSON.stringify(obj)}\n\n`)
 
     try {
-      await runChat({ chatId: chat.id, content, send })
+      await runChat({ chatId: chat.id, content, send, userId: user.id })
     } catch (error) {
       send({ type: 'error', message: error.message })
       send({ type: 'done' })

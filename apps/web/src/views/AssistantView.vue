@@ -1,7 +1,15 @@
 <script setup>
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { createChat, deleteChat, getMessages, listChats, streamChat } from '../api.js'
 import ExerciseCard from '../components/ExerciseCard.vue'
+import TabataCard from '../components/TabataCard.vue'
+
+const router = useRouter()
+
+function openTabata(id) {
+  router.push({ path: '/tabata', query: { open: id } })
+}
 
 const chats = ref([])
 const activeId = ref(null)
@@ -10,6 +18,19 @@ const input = ref('')
 const sending = ref(false)
 const error = ref('')
 const scrollEl = ref(null)
+const inputEl = ref(null)
+
+function autosize() {
+  const el = inputEl.value
+  if (!el) return
+  const styles = getComputedStyle(el)
+  const lineHeight = parseFloat(styles.lineHeight) || 22
+  const padding = (parseFloat(styles.paddingTop) || 0) + (parseFloat(styles.paddingBottom) || 0)
+  const maxHeight = Math.round(4 * lineHeight + padding)
+  el.style.height = 'auto'
+  el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`
+  el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden'
+}
 
 const activeChat = computed(() => chats.value.find((c) => c.id === activeId.value) || null)
 
@@ -29,6 +50,7 @@ async function loadMessages() {
     role: m.role,
     content: m.content,
     citations: m.citations || [],
+    tabata: m.tabata || [],
   }))
   scrollDown()
 }
@@ -69,9 +91,10 @@ async function send() {
   input.value = ''
   error.value = ''
   sending.value = true
+  nextTick(autosize)
 
-  messages.value.push({ role: 'user', content: text, citations: [] })
-  const placeholder = { role: 'assistant', content: '', citations: [] }
+  messages.value.push({ role: 'user', content: text, citations: [], tabata: [] })
+  const placeholder = { role: 'assistant', content: '', citations: [], tabata: [] }
   messages.value.push(placeholder)
   scrollDown()
 
@@ -82,6 +105,8 @@ async function send() {
         scrollDown()
       } else if (event.type === 'citations') {
         placeholder.citations = event.items
+      } else if (event.type === 'tabata') {
+        placeholder.tabata.push(event.tabata)
       } else if (event.type === 'error') {
         error.value = event.message
         placeholder.content += `${placeholder.content ? '\n' : ''}⚠ ${event.message}`
@@ -137,6 +162,16 @@ onMounted(refresh)
           >
             {{ message.content || '…' }}
           </div>
+          <div v-if="message.tabata && message.tabata.length" class="flex flex-col gap-2 max-w-[85%]">
+            <TabataCard v-for="item in message.tabata" :key="item.id" :tabata="item">
+              <button
+                class="self-start text-xs bg-emerald-600 text-white rounded px-3 py-1 hover:bg-emerald-700"
+                @click="openTabata(item.id)"
+              >
+                Открыть в таймере
+              </button>
+            </TabataCard>
+          </div>
           <div v-if="message.citations && message.citations.length" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
             <ExerciseCard v-for="card in message.citations" :key="card.id" :exercise="card" />
           </div>
@@ -145,18 +180,21 @@ onMounted(refresh)
 
       <div class="border-t border-slate-200 p-3">
         <p v-if="error" class="text-xs text-red-600 mb-2">{{ error }}</p>
-        <form class="flex gap-2" @submit.prevent="send">
-          <input
+        <form class="flex gap-2 items-end" @submit.prevent="send">
+          <textarea
+            ref="inputEl"
             v-model="input"
-            type="text"
+            rows="1"
             :disabled="sending"
             placeholder="Например: подбери упражнения на грудь со штангой"
-            class="flex-1 border border-slate-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 disabled:bg-slate-50"
-          />
+            class="flex-1 resize-none overflow-hidden border border-slate-300 rounded-md px-3 py-2 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-emerald-400 disabled:bg-slate-50"
+            @input="autosize"
+            @keydown.enter.exact.prevent="send"
+          ></textarea>
           <button
             type="submit"
             :disabled="sending || !input.trim()"
-            class="bg-emerald-600 text-white text-sm rounded-md px-4 hover:bg-emerald-700 disabled:opacity-50"
+            class="bg-emerald-600 text-white text-sm rounded-md px-4 py-2.5 hover:bg-emerald-700 disabled:opacity-50"
           >
             {{ sending ? '…' : 'Отправить' }}
           </button>

@@ -12,6 +12,12 @@ export const EXERCISES_JSON = path.join(DATASET_DIR, 'dist', 'exercises.json')
 export const SUMMARIES_DIR = path.join(ROOT_DIR, 'data-aug', 'summaries')
 export const TRANSLATIONS_DIR = path.join(ROOT_DIR, 'data-aug', 'translations')
 
+// animated media dataset (video clips + thumbnails), external clone
+export const MEDIA_DATASET_DIR = path.join(ROOT_DIR, 'cesar-exercises-dataset')
+export const MEDIA_DATASET_JSON = path.join(MEDIA_DATASET_DIR, 'data', 'exercises.json')
+export const MEDIA_VIDEOS_DIR = path.join(MEDIA_DATASET_DIR, 'videos')
+export const MEDIA_MAP_DIR = path.join(ROOT_DIR, 'data-aug', 'media')
+
 let cache = null
 
 export function loadExercises() {
@@ -56,5 +62,22 @@ export function readTranslation(id) {
     }
   }
   translationCache.set(id, value)
+  return value
+}
+
+const mediaMapCache = new Map()
+
+export function readMedia(id) {
+  if (mediaMapCache.has(id)) return mediaMapCache.get(id)
+  let value = null
+  const file = path.join(MEDIA_MAP_DIR, `${id}.json`)
+  if (existsSync(file)) {
+    try {
+      value = JSON.parse(readFileSync(file, 'utf8'))
+    } catch {
+      value = null
+    }
+  }
+  mediaMapCache.set(id, value)
   return value
 }

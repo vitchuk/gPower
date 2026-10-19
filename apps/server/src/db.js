@@ -46,6 +46,16 @@ db.exec(`
     role TEXT NOT NULL,
     content TEXT NOT NULL,
     citations TEXT,
+    tabata TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS tabatas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    params TEXT NOT NULL,
+    exercises TEXT NOT NULL,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
@@ -57,6 +67,12 @@ db.exec(`
     text TEXT NOT NULL
   );
 `)
+
+// Migration: existing databases predate the tabata snapshot column.
+const messageColumns = db.prepare('PRAGMA table_info(messages)').all()
+if (!messageColumns.some((c) => c.name === 'tabata')) {
+  db.exec('ALTER TABLE messages ADD COLUMN tabata TEXT')
+}
 
 db.exec(`
   CREATE VIRTUAL TABLE IF NOT EXISTS vec_docs USING vec0(

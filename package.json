@@ -15,7 +15,8 @@
     "build": "npm run build -w @gpower/web",
     "index": "npm run index -w @gpower/server",
     "summaries": "npm run summaries -w @gpower/server",
-    "translations": "npm run translations -w @gpower/server"
+    "translations": "npm run translations -w @gpower/server",
+    "media-map": "npm run media-map -w @gpower/server"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

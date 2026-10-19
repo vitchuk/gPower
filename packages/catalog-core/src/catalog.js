@@ -1,8 +1,9 @@
-import { readTranslation } from './data.js'
+import { readMedia, readTranslation } from './data.js'
 import { labelFor } from './dictionary.js'
 import { queryGroups, scoreQuery } from './search.js'
 
 export const imageUrl = (file) => `/images/${file}`
+export const gifUrl = (file) => `/gifs/${file.replace(/^videos\//, '')}`
 
 export function toListItem(ex) {
   return {
@@ -25,6 +26,7 @@ export function toListItem(ex) {
 
 export function toDetail(ex) {
   const translation = readTranslation(ex.id)
+  const media = readMedia(ex.id)
   return {
     ...ex,
     nameRu: translation?.nameRu ?? null,
@@ -37,6 +39,7 @@ export function toDetail(ex) {
     primaryMusclesLabels: ex.primaryMuscles.map((m) => labelFor('muscle', m)),
     secondaryMusclesLabels: ex.secondaryMuscles.map((m) => labelFor('muscle', m)),
     imageUrls: (ex.images || []).map(imageUrl),
+    gifUrl: media?.gif ? gifUrl(media.gif) : null,
   }
 }
 

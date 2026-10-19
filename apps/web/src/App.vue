@@ -30,6 +30,9 @@ async function doLogout() {
             <RouterLink to="/assistant" class="text-slate-300 hover:text-white" active-class="text-white font-medium">
               Ассистент
             </RouterLink>
+            <RouterLink to="/tabata" class="text-slate-300 hover:text-white" active-class="text-white font-medium">
+              Табата
+            </RouterLink>
             <RouterLink to="/help" class="text-slate-300 hover:text-white" active-class="text-white font-medium">
               Помощь
             </RouterLink>
@@ -38,7 +41,27 @@ async function doLogout() {
         <div class="text-sm flex items-center gap-3">
           <template v-if="auth.user">
             <span class="text-slate-300">{{ auth.user.username }}</span>
-            <button class="text-slate-300 hover:text-white" @click="doLogout">Выйти</button>
+            <button
+              class="text-slate-300 hover:text-white flex items-center"
+              aria-label="Выйти"
+              title="Выйти"
+              @click="doLogout"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="w-5 h-5"
+              >
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+            </button>
           </template>
           <RouterLink v-else to="/login" class="text-slate-300 hover:text-white">Войти</RouterLink>
         </div>

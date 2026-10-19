@@ -16,7 +16,7 @@
 | Инструмент | Вход | Результат |
 |---|---|---|
 | `search_exercises` | `q?, muscle?, equipment?, level?, category?, limit?` (1…50, по умолчанию 10) | `{total, items[]}` — карточки упражнений с `id, name, equipment, level, muscles, category, thumbnail` |
-| `get_exercise` | `id` (обязателен) | полная карточка упражнения (техника, мышцы, `imageUrls[]`); ошибка, если не найдено |
+| `get_exercise` | `id` (обязателен) | полная карточка упражнения (техника, мышцы, `imageUrls[]`, `gifUrl`); ошибка, если не найдено |
 | `get_filters` | — | значения фильтров с RU-подписями |
 
 Схемы входа описаны **JSON Schema** (`inputSchema` в `catalog-service.js`), не zod. Ответ инструмента — `content: [{type:"text", text: JSON.stringify(result)}]`; при ошибке — тот же формат с `isError: true`.

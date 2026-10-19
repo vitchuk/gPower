@@ -59,6 +59,26 @@ export function getMessages(id) {
   return request(`/chats/${id}/messages`)
 }
 
+export function listTabatas() {
+  return request('/tabatas')
+}
+
+export function getTabata(id) {
+  return request(`/tabatas/${id}`)
+}
+
+export function createTabata(payload) {
+  return request('/tabatas', { method: 'POST', body: JSON.stringify(payload) })
+}
+
+export function updateTabata(id, payload) {
+  return request(`/tabatas/${id}`, { method: 'PUT', body: JSON.stringify(payload) })
+}
+
+export function deleteTabata(id) {
+  return request(`/tabatas/${id}`, { method: 'DELETE' })
+}
+
 async function readSse(res, onEvent) {
   const reader = res.body.getReader()
   const decoder = new TextDecoder()

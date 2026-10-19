@@ -9,3 +9,7 @@ data/
 
 # external dataset clone (its own git repo, upstream: yuhonas/free-exercise-db)
 free-exercise-db/
+
+# external media dataset clone (its own git repo, upstream: hasaneyldrm/exercises-dataset;
+# mirror referenced in docs: Cesarfc206/exercises-dataset). Media © Gym visual, see NOTICE.md.
+cesar-exercises-dataset/

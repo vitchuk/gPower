@@ -9,7 +9,8 @@
     "start": "node src/index.js",
     "index": "node scripts/build-index.js",
     "summaries": "node scripts/generate-summaries.js",
-    "translations": "node scripts/generate-translations.js"
+    "translations": "node scripts/generate-translations.js",
+    "media-map": "node scripts/build-media-map.js"
   },
   "dependencies": {
     "@gpower/catalog-core": "*",

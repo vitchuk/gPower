@@ -11,7 +11,20 @@ const input = ref('')
 const sending = ref(false)
 const error = ref('')
 const scrollEl = ref(null)
+const inputEl = ref(null)
 const openFaq = ref({})
+
+function autosize() {
+  const el = inputEl.value
+  if (!el) return
+  const styles = getComputedStyle(el)
+  const lineHeight = parseFloat(styles.lineHeight) || 22
+  const padding = (parseFloat(styles.paddingTop) || 0) + (parseFloat(styles.paddingBottom) || 0)
+  const maxHeight = Math.round(4 * lineHeight + padding)
+  el.style.height = 'auto'
+  el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`
+  el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden'
+}
 
 function toggleFaq(index) {
   openFaq.value[index] = !openFaq.value[index]
@@ -35,6 +48,7 @@ async function send() {
   input.value = ''
   error.value = ''
   sending.value = true
+  nextTick(autosize)
 
   const history = messages.value.map((m) => ({ role: m.role, content: m.content }))
   messages.value.push({ role: 'user', content: text, citations: [] })
@@ -128,18 +142,21 @@ async function send() {
 
       <div class="border-t border-slate-200 p-3">
         <p v-if="error" class="text-xs text-red-600 mb-2">{{ error }}</p>
-        <form class="flex gap-2" @submit.prevent="send">
-          <input
+        <form class="flex gap-2 items-end" @submit.prevent="send">
+          <textarea
+            ref="inputEl"
             v-model="input"
-            type="text"
+            rows="1"
             :disabled="sending"
             placeholder="Ваш вопрос…"
-            class="flex-1 border border-slate-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 disabled:bg-slate-50"
-          />
+            class="flex-1 resize-none overflow-hidden border border-slate-300 rounded-md px-3 py-2 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-emerald-400 disabled:bg-slate-50"
+            @input="autosize"
+            @keydown.enter.exact.prevent="send"
+          ></textarea>
           <button
             type="submit"
             :disabled="sending || !input.trim()"
-            class="bg-emerald-600 text-white text-sm rounded-md px-4 hover:bg-emerald-700 disabled:opacity-50"
+            class="bg-emerald-600 text-white text-sm rounded-md px-4 py-2.5 hover:bg-emerald-700 disabled:opacity-50"
           >
             {{ sending ? '…' : 'Отправить' }}
           </button>
